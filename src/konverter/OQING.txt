@@ -1,0 +1,9 @@
+﻿OZBEKYOZUV KONVERTER 1.0 (o'rnatish kerak emas)
+
+ 1. OzbekYozuv_Konverter fayliga ikki marta bosing.
+ 2. Matnni belgilang -> Ctrl+C.
+ 3. Konverterda tugmani bosing: Lotin 2026 | Lotin 1995 | Kirill.
+ 4. Matn turgan joyga qaytib Ctrl+V bosing.
+
+Matnni oynaning chap tomoniga yozsangiz ham bo'ladi.
+Windows "Neizvestnyy izdatel" desa - "Otkryt" ni bosing.

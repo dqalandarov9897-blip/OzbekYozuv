@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OzbekYozuv — konverter</title>
+<meta name="description" content="Bepul konverter: Lotin 2026, Lotin 1995 va Kirill özbek yozuvlari orasida. Internetsiz ham işlaydi.">
+<meta property="og:title" content="OzbekYozuv — Lotin 2026 · Lotin 1995 · Kirill">
+<meta property="og:description" content="Matnni bir bosişda yangi özbek alifbosiga öğiring. Bepul, röyxatdan ötişsiz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Noto+Sans:wght@400;600;700&display=swap">
+<style>
+/* VOICE: bright, practical, civic — a public tool for everyone, warm not bureaucratic
+   IDEA: Khorezm majolica tilework — every new letter is a glazed tile
+   PICTURE: the working converter on a deep-blue glazed field, a row of letter tiles below
+   COLOUR and TYPE: lapis #16407a field, turquoise #1fa3b4 support, saffron #f2b52a accent; Unbounded titles + Noto Sans
+   LAYOUT: converter first under a modest title, then tiles, downloads, keyboard, rules, questions */
+:root{color-scheme:light dark;
+--bg:light-dark(#f7f5ef,#0d1624);--ink:light-dark(#14202e,#e8edf3);--mute:light-dark(#566270,#9fb0c2);
+--card:light-dark(#ffffff,#15233a);--line:light-dark(#dcd8cc,#26385a);
+--lapis:#16407a;--lapis2:#0f2f5c;--turq:#1fa3b4;--saff:#f2b52a;--field:light-dark(#16407a,#0a1d3a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans",system-ui,"Segoe UI",Arial,sans-serif;overflow-x:clip}
+a{color:inherit}
+h1,h2,h3{font-family:Unbounded,"Noto Sans",system-ui,sans-serif;line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(26px,4.4vw,44px);font-weight:800}
+h2{font-size:clamp(22px,3vw,32px);font-weight:800;margin-bottom:14px}
+h3{font-size:17px;font-weight:600}
+.band{padding:clamp(28px,4vw,60px) max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:var(--lapis2);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:18px;padding:10px max(5vw,16px);flex-wrap:wrap}
+.logo{font:800 18px Unbounded,sans-serif;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{width:30px;height:30px;border-radius:7px;background:var(--saff);color:var(--lapis2);display:grid;place-items:center;font-style:normal}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav a{flex:none;text-decoration:none;font-size:14px;padding:8px 10px;border-radius:8px;color:#cfe0f5}
+.nav a:hover,.nav a:focus-visible{background:#ffffff1f;color:#fff}
+/* hero / converter */
+.hero{background:var(--field);color:#fff;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;opacity:.13;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23fff' stroke-width='2'%3E%3Cpath d='M32 4l8 20 20 8-20 8-8 20-8-20-20-8 20-8z'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E");background-size:64px}
+.hero .wrap{position:relative}
+.hero p.lead{color:#cfe0f5;margin:10px 0 22px;max-width:62ch}
+.conv{background:var(--card);color:var(--ink);border-radius:18px;padding:clamp(14px,2vw,22px);box-shadow:0 18px 50px #0006;display:grid;gap:14px}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:light-dark(#eef1f6,#0e1a2d);padding:5px;border-radius:12px}
+.seg button{font:600 15px "Noto Sans",sans-serif;min-height:44px;border:0;border-radius:9px;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--lapis);color:#fff;box-shadow:0 2px 8px #16407a55}
+.panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.pane{display:grid;gap:8px;align-content:start}
+.pane label{font-size:13px;color:var(--mute);display:flex;justify-content:space-between;gap:8px}
+textarea{width:100%;min-height:210px;resize:vertical;font:17px/1.5 "Noto Sans",sans-serif;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+textarea:focus-visible{outline:3px solid var(--turq);outline-offset:1px}
+#chiq{background:light-dark(#f2f8f9,#0f2133);border-color:light-dark(#bfe3e8,#1d4a5e)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 15px "Noto Sans",sans-serif;min-height:44px;padding:0 16px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--turq)}
+.btn.main{background:var(--saff);border-color:var(--saff);color:#1b1404}
+.btn:focus-visible,.seg button:focus-visible,.key:focus-visible{outline:3px solid var(--turq);outline-offset:2px}
+.key{font:700 19px "Noto Sans",sans-serif;width:44px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--lapis);cursor:pointer}
+:root[data-theme=dark] .key{color:#8fc3ff}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .key{color:#8fc3ff}}
+.note{font-size:13px;color:var(--mute)}
+#xabar{min-height:20px;font-size:14px;color:var(--turq);font-weight:600}
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,1.6vw,18px);margin-top:8px}
+.tile{aspect-ratio:1;border-radius:16px;position:relative;display:grid;place-items:center;color:#fff;
+background:radial-gradient(circle at 30% 25%,#ffffff40,transparent 45%),linear-gradient(150deg,var(--turq),var(--lapis));box-shadow:inset 0 -6px 0 #0003,0 8px 18px #16407a40}
+.tile:nth-child(2n){background:radial-gradient(circle at 30% 25%,#ffffff40,transparent 45%),linear-gradient(150deg,var(--lapis),#0b2347)}
+.tile b{font:800 clamp(34px,7vw,76px) Unbounded,"Noto Sans",sans-serif}
+.tile span{position:absolute;bottom:8%;right:9%;background:var(--saff);color:#1b1404;font:700 clamp(11px,1.4vw,15px) "Noto Sans",sans-serif;padding:2px 8px;border-radius:6px}
+.tile small{position:absolute;top:8%;left:10%;font-size:clamp(10px,1.3vw,14px);opacity:.85}
+/* cards */
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:12px;align-content:start}
+.card ul,.card ol{margin:0;padding-left:20px}.card li{margin:4px 0}
+.tag{display:inline-block;font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;background:light-dark(#e3f4f6,#103343);color:light-dark(#0c6874,#7fd6e1)}
+table{border-collapse:collapse;width:100%;background:var(--card);border-radius:12px;overflow:hidden}
+th,td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:13px;color:var(--mute);font-weight:600}
+td.k{font:700 18px "Noto Sans",sans-serif;color:var(--lapis)}
+kbd{font:600 14px "Noto Sans",sans-serif;border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;background:var(--bg)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+details p{margin:0 0 14px;color:var(--mute)}
+.alt{background:light-dark(#ecebe3,#101c2e)}
+footer{background:var(--lapis2);color:#cfe0f5;font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between}
+@media(max-width:760px){.panes,.grid2{grid-template-columns:minmax(0,1fr)}textarea{min-height:150px}}
+@media(max-width:600px){table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 14px;padding-inline-start:8.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-7.5em;white-space:normal;font:400 13px "Noto Sans",sans-serif;color:var(--mute)}.nav{width:100%;margin-left:0}.tile small{display:none}.tile span{font-size:11px;padding:1px 5px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="logo" href="#konverter"><i>Ö</i>OzbekYozuv</a>
+  <nav class="nav">
+    <a href="#konverter">Konverter</a><a href="#kompyuter">Kompyuter uçun</a><a href="#klaviatura">Klaviatura</a><a href="#qoidalar">Qoidalar</a><a href="#savollar">Savollar</a>
+  </nav>
+</div></header>
+
+<section class="band hero" id="konverter"><div class="wrap">
+  <h1>Matnni istalgan özbek yozuviga öğiring</h1>
+  <p class="lead">Lotin 2026, Lotin 1995 va Kirill — bir bosişda. Bepul, röyxatdan ötişsiz, matningiz heç qayerga yuborilmaydi.</p>
+  <div class="conv">
+    <div class="seg" role="group" aria-label="Qaysi yozuvga">
+      <button type="button" data-m="1" aria-pressed="true">Lotin 2026</button>
+      <button type="button" data-m="2" aria-pressed="false">Lotin 1995</button>
+      <button type="button" data-m="3" aria-pressed="false">Kirill</button>
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <label for="kir"><span>Matn (istalgan yozuvda)</span><span id="sana">0 belgi</span></label>
+        <textarea id="kir" spellcheck="false">Ўзбекистон Республикаси. Yangi o'zbek alifbosi: shahar, choy, g'alaba, ma'no.</textarea>
+        <div class="row" aria-label="Yangi harflar">
+          <button class="key" type="button" data-h="ö">ö</button><button class="key" type="button" data-h="ğ">ğ</button><button class="key" type="button" data-h="ş">ş</button><button class="key" type="button" data-h="ç">ç</button><button class="key" type="button" data-h="ʼ" aria-label="tutuq belgisi">ʼ</button>
+          <button class="key" type="button" data-h="Ö">Ö</button><button class="key" type="button" data-h="Ğ">Ğ</button><button class="key" type="button" data-h="Ş">Ş</button><button class="key" type="button" data-h="Ç">Ç</button>
+        </div>
+      </div>
+      <div class="pane">
+        <label for="chiq"><span id="chiqnom">Natija — Lotin 2026</span></label>
+        <textarea id="chiq" readonly spellcheck="false"></textarea>
+        <div class="row">
+          <button class="btn main" type="button" id="nusxa">Nusxa oliş</button>
+          <button class="btn" type="button" id="qayta">Natijani matnga ötkaziş</button>
+          <button class="btn" type="button" id="toza">Tozalash</button>
+        </div>
+      </div>
+    </div>
+    <div id="xabar" role="status" aria-live="polite"></div>
+    <p class="note" style="margin:0">Yozuv avtomatik aniqlanadi: kirill, eski lotin yoki yangi lotin matnni tashlang — tanlangan yozuvga öğiriladi. Sahifa internetsiz ham işlaydi.</p>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Yangi alifbodagi beş belgi</h2>
+  <p class="note" style="margin:0 0 6px">Burçakdagi sariq belgi — UZB klaviaturasida shu harf turgan tugma.</p>
+  <div class="tiles">
+    <div class="tile"><small>oʻ örniga</small><b>Ö</b><span>]</span></div>
+    <div class="tile"><small>gʻ örniga</small><b>Ğ</b><span>[</span></div>
+    <div class="tile"><small>sh örniga</small><b>Ş</b><span>W</span></div>
+    <div class="tile"><small>ch örniga</small><b>Ç</b><span>C</span></div>
+    <div class="tile"><small>tutuq</small><b>ʼ</b><span>`</span></div>
+  </div>
+</div></section>
+
+<section class="band alt" id="kompyuter"><div class="wrap">
+  <h2>Windows kompyuter uçun</h2>
+  <p style="margin:0 0 18px;max-width:70ch">Word, Excel va istalgan dasturda yangi alifbo bilan işlash uçun bepul töplam. Administrator huquqi va internet kerak emas. Windows 7, 8, 10, 11; Office 2010–2021 va Microsoft 365.</p>
+  <div class="grid2">
+    <div class="card">
+      <span class="tag">Tavsiya etiladi</span>
+      <h3>Töliq paket — OzbekYozuv-1.0.zip</h3>
+      <ul>
+        <li><b>Word:</b> Lotin 2026 · Lotin 1995 · Kirill tugmalari va <b>Kitobça</b> — hujjatni A5 kitobça qilib çop etiş</li>
+        <li><b>Excel:</b> tugmalar va <code>=LOTIN2026(A1)</code>, <code>=LOTIN1995(A1)</code>, <code>=KIRILL(A1)</code> formulalari</li>
+        <li><b>UZB klaviaturasi:</b> ş ç ğ ö ʼ bitta tugmada</li>
+        <li><b>Konverter oynasi</b> — Telegram, brauzer va boşqa dasturlar uçun</li>
+      </ul>
+      <ol>
+        <li>Arxivni papkaga çiqaring (öng tugma → <b>Извлечь все</b>).</li>
+        <li>Word va Excelni yoping.</li>
+        <li><b>ORNATISH.vbs</b> ga ikki marta bosing → <b>OK</b>.</li>
+      </ol>
+      <div class="row"><a class="btn main dl" style="display:inline-flex;align-items:center;text-decoration:none" href="#yuklash" data-f="OzbekYozuv-1.0.zip">Yuklab oliş</a></div>
+    </div>
+    <div class="card">
+      <span class="tag">Cheklangan iş kompyuterlari uçun</span>
+      <h3>Faqat konverter — OzbekYozuv-Konverter-1.0.zip</h3>
+      <p style="margin:0">Heç narsa örnatmaydi. Bitta faylni oçasiz: matnni nusxalaysiz → yozuv tugmasini bosasiz → qöyasiz. IT bölimi örnatişni taqiqlagan kompyuterlarda ham işlaydi.</p>
+      <ol>
+        <li>Arxivni çiqaring.</li>
+        <li><b>OzbekYozuv_Konverter.hta</b> ni oçing.</li>
+      </ol>
+      <div class="row"><a class="btn dl" style="display:inline-flex;align-items:center;text-decoration:none" href="#yuklash" data-f="OzbekYozuv-Konverter-1.0.zip">Yuklab oliş</a></div>
+    </div>
+  </div>
+  <p class="note" id="yuklash" style="margin-top:14px">Fayllar GitHub sahifasining <b>Releases</b> bölimida turadi. Barça kod oçiq — örnatişdan oldin istalgan faylni Bloknotda öqiş mumkin.</p>
+</div></section>
+
+<section class="band" id="klaviatura"><div class="wrap">
+  <h2>UZB klaviaturasi</h2>
+  <p style="margin:0 0 16px;max-width:70ch">Örnatilgandan keyin <kbd>Alt</kbd>+<kbd>Shift</kbd> bilan <b>UZB</b> ni tanlang. Ctrl+C, Ctrl+W kabi buyruqlar özgarmaydi; ENG va RUS odatdagidek işlaydi.</p>
+  <table class="stack">
+    <thead><tr><th>Tugma</th><th>Oddiy</th><th>Shift bilan</th><th>Öng Alt bilan</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>W</kbd></td><td class="k">ş</td><td class="k">Ş</td><td>w / W</td></tr>
+      <tr><td><kbd>C</kbd></td><td class="k">ç</td><td class="k">Ç</td><td>c / C</td></tr>
+      <tr><td><kbd>[</kbd></td><td class="k">ğ</td><td class="k">Ğ</td><td>[ / {</td></tr>
+      <tr><td><kbd>]</kbd></td><td class="k">ö</td><td class="k">Ö</td><td>] / }</td></tr>
+      <tr><td><kbd>`</kbd></td><td class="k">ʼ</td><td>'</td><td>` / ~</td></tr>
+      <tr><td><kbd>-</kbd></td><td>-</td><td>_</td><td>— / –</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section class="band alt" id="qoidalar"><div class="wrap">
+  <h2>Öğiriş qoidalari</h2>
+  <div class="grid2">
+    <div class="card"><h3>Kirilldan lotinga</h3><ul>
+      <li>е → <b>ye</b> söz boşida va unlidan keyin, boşqa joyda <b>e</b></li>
+      <li>ё → yo, ю → yu, я → ya</li>
+      <li>ц → <b>s</b>, unlidan keyin <b>ts</b></li>
+      <li>ъ → <b>ʼ</b> (tutuq), сҳ → sʼh</li>
+    </ul></div>
+    <div class="card"><h3>Lotin 1995 dan 2026 ga</h3><ul>
+      <li>oʻ, o‘, o', o` → <b>ö</b>; gʻ → <b>ğ</b></li>
+      <li>sh → <b>ş</b>, ch → <b>ç</b></li>
+      <li>harflar orasidagi apostrof → <b>ʼ</b></li>
+      <li>Cheklovsiz: barça sözlar öğiriladi. Aralaş matnda faqat özbekça qismni tanlang.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section class="band" id="savollar"><div class="wrap">
+  <h2>Köp beriladigan savollar</h2>
+  <details><summary>Antivirus ogohlantirdi — xavflimi?</summary><p>UZB klaviaturasi tugma bosilişini kuzatib, kerakli harfni yozadigan kiçik dastur. Ayrim antiviruslar bunday dasturlarni «klaviatura kuzatuvçisi» deb belgilaydi. U heç narsani saqlamaydi va heç qayerga yubormaydi; kodi oçiq — uzb_klaviatura.ps1 faylini öqib köriş mumkin. Xohlamasangiz, faqat konverterni işlating.</p></details>
+  <details><summary>Administrator paroli kerakmi?</summary><p>Yöq. Hamma narsa faqat joriy foydalanuvçi uçun örnatiladi. Olib taşlaş uçun OCHIRISH.vbs ni bosing.</p></details>
+  <details><summary>Telefonda qanday yozaman?</summary><p>Matnni öğiriş uçun şu sahifani oçing — u telefonda ham işlaydi. Yangi harflarni yoziş uçun Gboard klaviaturasida özbek (lotin) tilini qöşing va harfni bosib turing: o → ö, g → ğ, s → ş, c → ç.</p></details>
+  <details><summary>Matnim internetga yuboriladimi?</summary><p>Yöq. Öğiriş brauzeringizning özida bajariladi. Sahifani saqlab olsangiz, internetsiz ham işlaydi.</p></details>
+</div></section>
+
+<footer class="band"><div class="wrap">
+  <span><b>OzbekYozuv 1.0</b> · MIT litsenziyasi · bepul foydalaniş va tarqatiş mumkin</span>
+  <span>Muallif: Dilshod Qalandarov</span>
+</div></footer>
+
+<script>
+// Ozbek alifbo 2026 konverteri (ES3 - Internet Explorer / HTA uchun ham ishlaydi)
+var OZB = (function () {
+  var AP = "'`‘’ʻʼ´";
+  var TUTUQ = "ʼ";
+  var ISTISNO = "|chrome|chat|check|chip|cheese|chess|chicken|chief|child|choice|church|chart|channel|chapter|" +
+    "shop|show|shift|share|shell|shot|ship|shirt|shoe|short|should|shut|sheet|shelf|shine|" +
+    "flash|push|cash|crash|fresh|english|wash|finish|match|search|touch|teacher|school|machine|" +
+    "mechanic|technology|orchestra|chemistry|character|schedule|shampoo|chips|ketchup|";
+  var MAP = {};
+  var pairs = [
+    [0x430, "a"], [0x431, "b"], [0x432, "v"], [0x433, "g"], [0x493, "ğ"], [0x434, "d"], [0x436, "j"],
+    [0x437, "z"], [0x438, "i"], [0x439, "y"], [0x43A, "k"], [0x49B, "q"], [0x43B, "l"], [0x43C, "m"],
+    [0x43D, "n"], [0x43E, "o"], [0x43F, "p"], [0x440, "r"], [0x442, "t"], [0x443, "u"], [0x45E, "ö"],
+    [0x444, "f"], [0x445, "x"], [0x4B3, "h"], [0x447, "ç"], [0x448, "ş"], [0x449, "ş"],
+    [0x44B, "i"], [0x44D, "e"]
+  ];
+  for (var p = 0; p < pairs.length; p++) MAP[pairs[p][0]] = pairs[p][1];
+
+  function isAp(c) { return c !== "" && AP.indexOf(c) >= 0; }
+  function isLet(c) {
+    if (!c) return false;
+    var k = c.charCodeAt(0);
+    return (k >= 65 && k <= 90) || (k >= 97 && k <= 122) || (k >= 0xC0 && k <= 0x24F) || (k >= 0x400 && k <= 0x4FF);
+  }
+  function lowK(k) {
+    if (k >= 0x410 && k <= 0x42F) return k + 0x20;
+    if (k === 0x401) return 0x451;
+    if (k === 0x40E) return 0x45E;
+    if (k === 0x492) return 0x493;
+    if (k === 0x49A) return 0x49B;
+    if (k === 0x4B2) return 0x4B3;
+    return k;
+  }
+  function isUp(c) {
+    if (!c) return false;
+    var k = c.charCodeAt(0);
+    if (k >= 65 && k <= 90) return true;
+    if (k >= 0x410 && k <= 0x42F) return true;
+    return k === 0x401 || k === 0x40E || k === 0x492 || k === 0x49A || k === 0x4B2 ||
+      k === 0xD6 || k === 0x11E || k === 0x15E || k === 0xC7;
+  }
+  function isVow(c) {
+    if (!c) return false;
+    var k = lowK(c.charCodeAt(0));
+    return k === 0x430 || k === 0x435 || k === 0x451 || k === 0x438 || k === 0x43E ||
+      k === 0x443 || k === 0x45E || k === 0x44D || k === 0x44E || k === 0x44F;
+  }
+  function lk(c) { return c ? lowK(c.charCodeAt(0)) : 0; }
+  function cap(s, up, nu) {
+    if (!up || !s) return s;
+    if (nu || s.length === 1) return s.toUpperCase();
+    return s.charAt(0).toUpperCase() + s.substring(1);
+  }
+  function hasCyr(t) {
+    for (var i = 0; i < t.length; i++) { var k = t.charCodeAt(i); if (k >= 0x400 && k <= 0x4FF) return true; }
+    return false;
+  }
+  function kirill(t) {
+    var r = "", n = t.length;
+    for (var i = 0; i < n; i++) {
+      var c = t.charAt(i), pv = i > 0 ? t.charAt(i - 1) : "", nx = i < n - 1 ? t.charAt(i + 1) : "";
+      var up = isUp(c), nu = isUp(nx), k = lowK(c.charCodeAt(0)), o;
+      if (k === 0x435) o = cap((!isLet(pv) || isVow(pv) || lk(pv) === 0x44A || lk(pv) === 0x44C) ? "ye" : "e", up, nu);
+      else if (k === 0x451) o = cap("yo", up, nu);
+      else if (k === 0x44E) o = cap("yu", up, nu);
+      else if (k === 0x44F) o = cap("ya", up, nu);
+      else if (k === 0x446) o = cap(isVow(pv) ? "ts" : "s", up, nu);
+      else if (k === 0x44A) o = TUTUQ;
+      else if (k === 0x44C) o = lk(nx) === 0x43E ? cap("y", up, nu) : "";
+      else if (k === 0x441) o = cap("s", up, nu) + (lk(nx) === 0x4B3 ? TUTUQ : "");
+      else { o = MAP[k]; o = o ? cap(o, up, nu) : c; }
+      r += o;
+    }
+    return r;
+  }
+  function himoya(t) {
+    var L = t.toLowerCase(), w = "";
+    if (L.indexOf("@") >= 0 || L.indexOf("://") >= 0 || L.indexOf("www.") >= 0 || L.indexOf("w") >= 0) return true;
+    for (var i = 0; i < L.length; i++) {
+      var ch = L.charAt(i), nx = L.charAt(i + 1);
+      if (ch === "c" && nx !== "h") return true;
+      if (ch === "." && i > 0 && nx >= "a" && nx <= "z") return true;
+      if (ch >= "a" && ch <= "z") w += ch;
+    }
+    return w !== "" && ISTISNO.indexOf("|" + w + "|") >= 0;
+  }
+  var OG = { "o": "ö", "O": "Ö", "g": "ğ", "G": "Ğ" };
+  var SC = { "s": "ş", "S": "Ş", "c": "ç", "C": "Ç" };
+  function eski(t) {
+    var r = "", i = 0, n = t.length;
+    while (i < n) {
+      var c = t.charAt(i), nx = i < n - 1 ? t.charAt(i + 1) : "";
+      if (isAp(nx) && OG[c]) { r += OG[c]; i += 2; }
+      else if ((nx === "h" || nx === "H") && SC[c]) { r += SC[c]; i += 2; }
+      else if (isAp(c) && i > 0 && i < n - 1) { r += (isLet(t.charAt(i - 1)) && isLet(nx)) ? TUTUQ : c; i++; }
+      else { r += c; i++; }
+    }
+    return r;
+  }
+  function token(t) {
+    if (hasCyr(t)) t = kirill(t);
+    if (!himoya(t)) t = eski(t);
+    return t;
+  }
+  function ogir(s) {
+    var res = "", tok = "";
+    for (var i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r" || ch === " " || ch === "\u000B") {
+        if (tok) { res += token(tok); tok = ""; }
+        res += ch;
+      } else tok += ch;
+    }
+    if (tok) res += token(tok);
+    return res;
+  }
+
+  var LATCYR = {"a":0x430,"b":0x431,"d":0x434,"f":0x444,"g":0x433,"h":0x4B3,"i":0x438,"j":0x436,"k":0x43A,"l":0x43B,
+    "m":0x43C,"n":0x43D,"o":0x43E,"p":0x43F,"q":0x49B,"r":0x440,"s":0x441,"t":0x442,"u":0x443,"v":0x432,"x":0x445,
+    "y":0x439,"z":0x437,"ö":0x45E,"ğ":0x493,"ş":0x448,"ç":0x447};
+  function upCyr(k) {
+    if (k >= 0x430 && k <= 0x44F) return k - 0x20;
+    if (k === 0x451) return 0x401; if (k === 0x45E) return 0x40E; if (k === 0x493) return 0x492;
+    if (k === 0x49B) return 0x49A; if (k === 0x4B3) return 0x4B2; return k;
+  }
+  function cy(k, up) { return String.fromCharCode(up ? upCyr(k) : k); }
+  function latVow(c) { return c !== "" && "aeiouAEIOUöÖ".indexOf(c) >= 0; }
+  function to1995(t) {
+    var r = "", n = t.length;
+    for (var i = 0; i < n; i++) {
+      var c = t.charAt(i), nx = i < n - 1 ? t.charAt(i + 1) : "", pv = i > 0 ? t.charAt(i - 1) : "";
+      var kat = isUp(nx) || (!isLet(nx) && isUp(pv));
+      if (c === "ö") r += "oʻ"; else if (c === "Ö") r += "Oʻ";
+      else if (c === "ğ") r += "gʻ"; else if (c === "Ğ") r += "Gʻ";
+      else if (c === "ş") r += "sh"; else if (c === "Ş") r += kat ? "SH" : "Sh";
+      else if (c === "ç") r += "ch"; else if (c === "Ç") r += kat ? "CH" : "Ch";
+      else r += c;
+    }
+    return r;
+  }
+  function toKirill(t) {
+    var r = "", i = 0, n = t.length;
+    while (i < n) {
+      var c = t.charAt(i), lc = c.toLowerCase(), up = isUp(c), nx = t.charAt(i + 1), ln = nx.toLowerCase();
+      var n2 = t.charAt(i + 2), pv = i > 0 ? t.charAt(i - 1) : "", k;
+      if (lc === "y" && (ln === "e" || ln === "o" || ln === "u" || ln === "a")) {
+        k = ln === "e" ? 0x435 : ln === "o" ? 0x451 : ln === "u" ? 0x44E : 0x44F;
+        r += cy(k, up); i += 2;
+      } else if (lc === "s" && nx === TUTUQ && n2.toLowerCase() === "h") {
+        r += cy(0x441, up) + cy(0x4B3, isUp(n2)); i += 3;
+      } else if (lc === "e") {
+        r += cy((!isLet(pv) || latVow(pv)) ? 0x44D : 0x435, up); i++;
+      } else if (c === TUTUQ) {
+        r += (isLet(pv) && isLet(nx)) ? cy(0x44A, isUp(pv) && isUp(nx)) : c; i++;
+      } else {
+        if (lc === "c") k = (ln === "e" || ln === "i" || ln === "y") ? 0x441 : 0x43A;
+        else if (lc === "w") k = 0x432;
+        else k = LATCYR[lc];
+        r += k ? cy(k, up) : c; i++;
+      }
+    }
+    return r;
+  }
+  function token3(t, m) {
+    var cyr = hasCyr(t);
+    if (m === 3 && cyr) return t;
+    t = cyr ? kirill(t) : eski(t);
+    return m === 2 ? to1995(t) : (m === 3 ? toKirill(t) : t);
+  }
+  function ogir3(s, m) {
+    var res = "", tok = "";
+    for (var i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r" || ch === " " || ch === "\u000B") {
+        if (tok) { res += token3(tok, m); tok = ""; }
+        res += ch;
+      } else tok += ch;
+    }
+    if (tok) res += token3(tok, m);
+    return res;
+  }
+  return { ogir: function (s) { return ogir3(s, 1); }, ogir3: ogir3 };
+})();
+if (typeof module !== "undefined") module.exports = OZB;
+
+</script>
+<script>
+{
+  const kir=document.getElementById('kir'),chiq=document.getElementById('chiq'),xabar=document.getElementById('xabar');
+  const nomlar={1:'Lotin 2026',2:'Lotin 1995',3:'Kirill'};
+  let m=1;
+  try{const s=localStorage.getItem('oy_m');if(s&&nomlar[s])m=+s;const t=localStorage.getItem('oy_t');if(t)kir.value=t}catch(e){}
+  const yangila=()=>{
+    chiq.value=OZB.ogir3(kir.value,m);
+    document.getElementById('sana').textContent=kir.value.length+' belgi';
+    document.getElementById('chiqnom').textContent='Natija — '+nomlar[m];
+    document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.m===m?'true':'false'));
+    try{localStorage.setItem('oy_m',m);localStorage.setItem('oy_t',kir.value)}catch(e){}
+  };
+  const ayt=t=>{xabar.textContent=t;clearTimeout(ayt.t);ayt.t=setTimeout(()=>xabar.textContent='',2600)};
+  kir.addEventListener('input',yangila);
+  document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{m=+b.dataset.m;yangila()}));
+  document.querySelectorAll('.key').forEach(b=>b.addEventListener('click',()=>{
+    const h=b.dataset.h,a=kir.selectionStart,z=kir.selectionEnd;
+    kir.value=kir.value.slice(0,a)+h+kir.value.slice(z);kir.focus();kir.selectionStart=kir.selectionEnd=a+h.length;yangila()}));
+  document.getElementById('nusxa').addEventListener('click',()=>{
+    const eski=()=>{chiq.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ayt(ok?'Nusxa olindi':'Natijani belgilab, Ctrl+C bosing')};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(chiq.value).then(()=>ayt('Nusxa olindi'),eski);else eski()});
+  document.getElementById('qayta').addEventListener('click',()=>{kir.value=chiq.value;yangila();ayt('Natija matn maydoniga ötkazildi')});
+  document.getElementById('toza').addEventListener('click',()=>{kir.value='';yangila();kir.focus()});
+  /* GitHub Pages'da yuklab oliş havolasini özi topadi */
+  const h=location.hostname,p=location.pathname.split('/').filter(Boolean);
+  if(/\.github\.io$/.test(h)){
+    const user=h.split('.')[0],repo=p[0]||(user+'.github.io');
+    document.querySelectorAll('.dl').forEach(a=>{a.href='https://github.com/'+user+'/'+repo+'/releases/latest/download/'+a.dataset.f});
+    document.getElementById('yuklash').innerHTML='Barça versiyalar: <a href="https://github.com/'+user+'/'+repo+'/releases">GitHub Releases</a>. Kod oçiq — örnatişdan oldin istalgan faylni Bloknotda öqiş mumkin.';
+  }
+  yangila();
+}
+</script>
+</body>
+</html>

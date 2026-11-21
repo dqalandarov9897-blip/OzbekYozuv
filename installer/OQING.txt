@@ -1,0 +1,15 @@
+﻿OZBEKYOZUV 1.0 - QISQA YO'RIQNOMA
+
+O'RNATISH (administrator paroli va internet kerak emas):
+ 1. Word va Excel'ni yoping.
+ 2. ORNATISH.vbs ga ikki marta bosing -> OK.
+ 3. Windows 7 bo'lsa - tizimdan chiqib qayta kiring.
+
+ISHLATISH:
+ - Word/Excel: NADSTROYKI (Add-ins) yorlig'i -> Lotin 2026 | Lotin 1995 | Kirill
+ - Excel formulalari: =LOTIN2026(A1)  =LOTIN1995(A1)  =KIRILL(A1)
+ - Ish stolidagi OzbekYozuv_Konverter: Ctrl+C -> tugma -> Ctrl+V
+ - Klaviatura: Alt+Shift -> UZB.  W=ş  C=ç  [=ğ  ]=ö  `=ʼ
+
+OLIB TASHLASH: OCHIRISH.vbs
+Batafsil: README.md, chop etish uchun: Yoriqnoma_A5.pdf
